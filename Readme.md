@@ -1,7 +1,7 @@
 # Личный проект «Кекстаграм» [![Build status][travis-image]][travis-url]
 
 * Студент: [Aleksandr Malinin](https://up.htmlacademy.ru/javascript/11/user/321121).
-* Наставник: `Неизвестно`.
+* Наставник: [Антон 🃏 Попов](https://up.htmlacademy.ru/adaptive/12/user/78239).
 
 ---
 
