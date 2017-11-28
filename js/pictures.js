@@ -33,8 +33,6 @@ for (var i = 0; i < 25; i++) {
   pictures[i].comments = picturesComments[commentsrand];
 }
 
-console.log(pictures)
-
 // созданные дом-элементы
 var renderPicture = function (picture) {
   var photoElement = pictureTemplate.cloneNode(true);
