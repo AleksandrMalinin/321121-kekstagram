@@ -23,14 +23,17 @@ var pictures = [];
 
 // генерация постов
 for (var i = 0; i < 25; i++) {
-  var urlrand = i + 1;
-  var likesrand = Math.floor(getRandomNumber(15, 200));
-  var commentsrand = Math.floor(Math.random() * picturesComments.length);
+  var urlRandom = i + 1;
+  var likesRandom = Math.floor(getRandomNumber(15, 200));
+  var commentsRandom = Math.floor(Math.random() * picturesComments.length);
 
   pictures[i] = {};
-  pictures[i].url = 'photos/' + urlrand + '.jpg';
-  pictures[i].likes = likesrand;
-  pictures[i].comments = picturesComments[commentsrand];
+  pictures[i].url = 'photos/' + urlRandom + '.jpg';
+  pictures[i].likes = likesRandom;
+  // pictures[i].comments = [];
+  // pictures[i].comments.length = Math.round(getRandomNumber(1, 2));
+  pictures[i].comments = [picturesComments[commentsRandom]];
+  // pictures[i].comments = picturesComments[commentsrand];
 }
 
 // созданные дом-элементы
@@ -39,7 +42,7 @@ var renderPicture = function (picture) {
 
   photoElement.querySelector('img').src = picture.url;
   photoElement.querySelector('.picture-likes').textContent = picture.likes;
-  photoElement.querySelector('.picture-comments').textContent = picture.comments;
+  photoElement.querySelector('.picture-comments').textContent = picture.comments.length;
 
   return photoElement;
 };
@@ -51,8 +54,7 @@ for (i = 0; i < pictures.length; i++) {
 }
 photosList.appendChild(fragment);
 
-
 // заполнение данными из первого массива
 galleryOverlayPreview.querySelector('img').src = pictures[0].url;
 galleryOverlayPreview.querySelector('.likes-count').textContent = pictures[0].likes;
-galleryOverlayPreview.querySelector('.comments-count').textContent = pictures[0].comments;
+galleryOverlayPreview.querySelector('.comments-count').textContent = pictures[0].comments.length;
