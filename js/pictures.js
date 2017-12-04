@@ -1,7 +1,6 @@
 'use strict';
 
 var galleryOverlay = document.querySelector('.gallery-overlay');
-// var galleryOverlayPreview = galleryOverlay.querySelector('.gallery-overlay-preview');
 var photosList = document.querySelector('.pictures');
 var pictureTemplate = document.querySelector('#picture-template').content.querySelector('.picture');
 var galleryClose = galleryOverlay.querySelector('.gallery-overlay-close');
@@ -11,7 +10,8 @@ var getRandomNumber = function (minValue, maxValue) {
 };
 
 var picturesComments = [
-  'Всё отлично!', 'В целом всё неплохо. Но не всё.',
+  'Всё отлично!',
+  'В целом всё неплохо. Но не всё.',
   'Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально.',
   'Моя бабушка случайно чихнула с фотоаппаратом в руках и у неё получилась фотография лучше.',
   'Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше.',
@@ -26,10 +26,11 @@ for (var i = 0; i < 25; i++) {
   var likesRandom = Math.floor(getRandomNumber(15, 200));
   var commentsRandom = Math.floor(Math.random() * picturesComments.length);
 
-  pictures[i] = {};
-  pictures[i].url = 'photos/' + urlRandom + '.jpg';
-  pictures[i].likes = likesRandom;
-  pictures[i].comments = [picturesComments[commentsRandom]];
+  pictures[i] = {
+    url: 'photos/' + urlRandom + '.jpg',
+    likes: likesRandom,
+    comments: [picturesComments[commentsRandom]]
+  };
 }
 
 // созданные дом-элементы
@@ -50,14 +51,21 @@ for (i = 0; i < pictures.length; i++) {
 }
 photosList.appendChild(fragment);
 
-// заполнение данными из первого массива
+var ESC_KEYCODE = 27;
+var ENTER_KEYCODE = 13;
 
-/*  for (i = 0; i < pictures.length; i++) {
-  galleryOverlayPreview.querySelector('img').src = pictures[i].url;
-  galleryOverlayPreview.querySelector('.likes-count').textContent = pictures[i].likes;
-  galleryOverlayPreview.querySelector('.comments-count').textContent = pictures[i].comments.length;
-}*/
+var uploadFile = document.querySelector('.upload-input');
+var uploadOverlay = document.querySelector('.upload-overlay');
+var uploadFormCancel = uploadOverlay.querySelector('.upload-form-cancel');
+var uploadFormDescription = uploadOverlay.querySelector('.upload-form-description');
+var uploadEffectControls = uploadOverlay.querySelector('.upload-effect-controls');
+var effectImagePreview = uploadOverlay.querySelector('.effect-image-preview');
+var uploadResizeDecrease = uploadOverlay.querySelector('.upload-resize-controls-button-dec');
+var uploadResizeIncrease = uploadOverlay.querySelector('.upload-resize-controls-button-inc');
+var uploadResizeValue = uploadOverlay.querySelector('.upload-resize-controls-value');
+// var hashTags = uploadOverlay.querySelector('.upload-form-hashtags');
 
+//  фотографии в галерее
 photosList.addEventListener('click', function (evt) {
   evt.preventDefault();
   galleryOverlay.classList.remove('hidden');
@@ -70,18 +78,93 @@ photosList.addEventListener('click', function (evt) {
   galleryOverlay.querySelector('.comments-count').textContent = parentNode.querySelector('.picture-comments').textContent;
 
   document.addEventListener('keydown', function (e) {
-    if (e.keyCode === 27) {
+    if (e.keyCode === ESC_KEYCODE) {
       galleryOverlay.classList.add('hidden');
     }
   });
 });
 
+// закрытие галереи
 galleryClose.addEventListener('click', function () {
   galleryOverlay.classList.add('hidden');
 });
 
+// закрытие галереи через ENTER
 galleryClose.addEventListener('keydown', function (evt) {
-  if (evt.keyCode === 13) {
+  if (evt.keyCode === ENTER_KEYCODE) {
     galleryOverlay.classList.add('hidden');
   }
 });
+
+// показ окна формы при загрузке фотографии
+uploadFile.addEventListener('change', function () {
+  uploadOverlay.classList.remove('hidden');
+
+  // закрытие через ESC
+  document.addEventListener('keydown', function (evt) {
+    if (evt.keyCode === ESC_KEYCODE) {
+      uploadOverlay.classList.add('hidden');
+    }
+  });
+
+  // при фокусе на комментарии форма не закрывается
+  uploadFormDescription.addEventListener('keydown', function (evt) {
+    if (evt.keyCode === ESC_KEYCODE) {
+      evt.stopPropagation();
+    }
+  });
+});
+
+// скрытие окна формы
+uploadFormCancel.addEventListener('click', function () {
+  uploadOverlay.classList.add('hidden');
+  document.removeEventListener('keydown', function (evt) {
+    if (evt.keyCode === ESC_KEYCODE) {
+      uploadOverlay.classList.add('hidden');
+    }
+  });
+});
+
+// закрытие через ENTER
+uploadFormCancel.addEventListener('keydown', function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE) {
+    uploadOverlay.classList.add('hidden');
+  }
+});
+
+// смена фильтра
+uploadEffectControls.addEventListener('click', function (evt) {
+  var target = evt.target;
+
+  if (target.type !== 'radio') {
+    return;
+  }
+
+  effectImagePreview.classList.add(target.getAttribute('name') + '-' + target.getAttribute('value'));
+});
+
+// уменьшение масштаба
+uploadResizeDecrease.addEventListener('click', function () {
+  if (parseInt(uploadResizeValue.value, 10) === parseInt(uploadResizeValue.min, 10)) {
+    return;
+  }
+
+  uploadResizeValue.setAttribute('value', parseInt(uploadResizeValue.value, 10) - parseInt(uploadResizeValue.step, 10) + '%');
+  effectImagePreview.style.transform = 'scale(0.' + parseInt(uploadResizeValue.value, 10) + ')';
+});
+
+// увеличение масштаба
+uploadResizeIncrease.addEventListener('click', function () {
+  if (parseInt(uploadResizeValue.value, 10) === parseInt(uploadResizeValue.max, 10)) {
+    return;
+  }
+
+  uploadResizeValue.setAttribute('value', parseInt(uploadResizeValue.value, 10) + parseInt(uploadResizeValue.step, 10) + '%');
+  if (parseInt(uploadResizeValue.value, 10) < 100) {
+    effectImagePreview.style.transform = 'scale(0.' + parseInt(uploadResizeValue.value, 10) + ')';
+  } else {
+    effectImagePreview.style.transform = 'scale(1)';
+  }
+});
+
+// хэштеги
