@@ -1,12 +1,24 @@
 'use strict';
 
+var PICTURES_LENGTH = 25;
+var LIKE_MINCOUNTS = 15;
+var LIKE_MAXCOUNTS = 200;
+
 var galleryOverlay = document.querySelector('.gallery-overlay');
 var photosList = document.querySelector('.pictures');
 var pictureTemplate = document.querySelector('#picture-template').content.querySelector('.picture');
 var galleryClose = galleryOverlay.querySelector('.gallery-overlay-close');
 
 var getRandomNumber = function (minValue, maxValue) {
-  return Math.random() * (maxValue - minValue) + minValue;
+  return Math.round(Math.random() * (maxValue - minValue) + minValue);
+};
+
+var getRandomIndex = function (array) {
+  return array[Math.floor(Math.random() * array.length)];
+};
+
+var getArrayRandomComments = function () {
+  return getRandomNumber(1, 2) === 1 ? [getRandomIndex(picturesComments)] : [getRandomIndex(picturesComments), getRandomIndex(picturesComments)];
 };
 
 var picturesComments = [
@@ -21,15 +33,11 @@ var picturesComments = [
 var pictures = [];
 
 // генерация постов
-for (var i = 0; i < 25; i++) {
-  var urlRandom = i + 1;
-  var likesRandom = Math.floor(getRandomNumber(15, 200));
-  var commentsRandom = Math.floor(Math.random() * picturesComments.length);
-
+for (var i = 0; i < PICTURES_LENGTH; i++) {
   pictures[i] = {
-    url: 'photos/' + urlRandom + '.jpg',
-    likes: likesRandom,
-    comments: [picturesComments[commentsRandom]]
+    url: 'photos/' + (i + 1) + '.jpg',
+    likes: getRandomNumber(LIKE_MINCOUNTS, LIKE_MAXCOUNTS),
+    comments: getArrayRandomComments()
   };
 }
 
@@ -63,12 +71,26 @@ var effectImagePreview = uploadOverlay.querySelector('.effect-image-preview');
 var uploadResizeDecrease = uploadOverlay.querySelector('.upload-resize-controls-button-dec');
 var uploadResizeIncrease = uploadOverlay.querySelector('.upload-resize-controls-button-inc');
 var uploadResizeValue = uploadOverlay.querySelector('.upload-resize-controls-value');
-// var hashTags = uploadOverlay.querySelector('.upload-form-hashtags');
+var hashTags = uploadOverlay.querySelector('.upload-form-hashtags');
+var submit = uploadOverlay.querySelector('.upload-form-submit');
+
+var openGallery = function () {
+  galleryOverlay.classList.remove('hidden');
+};
+
+var closeGallery = function () {
+  galleryOverlay.classList.add('hidden');
+  document.removeEventListener('keydown', function (e) {
+    if (e.keyCode === ESC_KEYCODE) {
+      closeGallery();
+    }
+  });
+};
 
 //  фотографии в галерее
 photosList.addEventListener('click', function (evt) {
   evt.preventDefault();
-  galleryOverlay.classList.remove('hidden');
+  openGallery();
 
   var target = evt.target;
   var parentNode = target.parentNode;
@@ -79,56 +101,58 @@ photosList.addEventListener('click', function (evt) {
 
   document.addEventListener('keydown', function (e) {
     if (e.keyCode === ESC_KEYCODE) {
-      galleryOverlay.classList.add('hidden');
+      closeGallery();
     }
   });
 });
 
 // закрытие галереи
 galleryClose.addEventListener('click', function () {
-  galleryOverlay.classList.add('hidden');
+  closeGallery();
 });
 
 // закрытие галереи через ENTER
 galleryClose.addEventListener('keydown', function (evt) {
   if (evt.keyCode === ENTER_KEYCODE) {
-    galleryOverlay.classList.add('hidden');
+    closeGallery();
   }
 });
 
-// показ окна формы при загрузке фотографии
-uploadFile.addEventListener('change', function () {
+var escapePressHandler = function (evt) {
+  if (evt.keyCode === ESC_KEYCODE) {
+    closePopup();
+  }
+};
+
+var openPopup = function () {
   uploadOverlay.classList.remove('hidden');
-
-  // закрытие через ESC
-  document.addEventListener('keydown', function (evt) {
-    if (evt.keyCode === ESC_KEYCODE) {
-      uploadOverlay.classList.add('hidden');
-    }
-  });
-
-  // при фокусе на комментарии форма не закрывается
+  document.addEventListener('keydown', escapePressHandler);
   uploadFormDescription.addEventListener('keydown', function (evt) {
     if (evt.keyCode === ESC_KEYCODE) {
       evt.stopPropagation();
     }
   });
+};
+
+var closePopup = function () {
+  uploadOverlay.classList.add('hidden');
+  document.removeEventListener('keydown', escapePressHandler);
+};
+
+// показ окна формы при загрузке фотографии
+uploadFile.addEventListener('change', function () {
+  openPopup();
 });
 
 // скрытие окна формы
 uploadFormCancel.addEventListener('click', function () {
-  uploadOverlay.classList.add('hidden');
-  document.removeEventListener('keydown', function (evt) {
-    if (evt.keyCode === ESC_KEYCODE) {
-      uploadOverlay.classList.add('hidden');
-    }
-  });
+  closePopup();
 });
 
 // закрытие через ENTER
 uploadFormCancel.addEventListener('keydown', function (evt) {
   if (evt.keyCode === ENTER_KEYCODE) {
-    uploadOverlay.classList.add('hidden');
+    closePopup();
   }
 });
 
@@ -140,12 +164,12 @@ uploadEffectControls.addEventListener('click', function (evt) {
     return;
   }
 
-  effectImagePreview.classList.add(target.getAttribute('name') + '-' + target.getAttribute('value'));
+  effectImagePreview.className = target.getAttribute('name') + '-' + target.getAttribute('value');
 });
 
 // уменьшение масштаба
 uploadResizeDecrease.addEventListener('click', function () {
-  if (parseInt(uploadResizeValue.value, 10) === parseInt(uploadResizeValue.min, 10)) {
+  if (parseInt(uploadResizeValue.value, 10) <= parseInt(uploadResizeValue.min, 10)) {
     return;
   }
 
@@ -155,7 +179,7 @@ uploadResizeDecrease.addEventListener('click', function () {
 
 // увеличение масштаба
 uploadResizeIncrease.addEventListener('click', function () {
-  if (parseInt(uploadResizeValue.value, 10) === parseInt(uploadResizeValue.max, 10)) {
+  if (parseInt(uploadResizeValue.value, 10) >= parseInt(uploadResizeValue.max, 10)) {
     return;
   }
 
@@ -167,4 +191,31 @@ uploadResizeIncrease.addEventListener('click', function () {
   }
 });
 
+var showErrorMessage = function () {
+  hashTags.style.outlineColor = 'red';
+};
+
 // хэштеги
+hashTags.addEventListener('change', function () {
+  var separator = ' ';
+  var hashTagsSplit = hashTags.value.split(separator);
+
+  for (i = 0; i < hashTagsSplit.length; i++) {
+    hashTagsSplit[i] = hashTagsSplit[i].toLowerCase();
+
+    if (hashTagsSplit[i].lastIndexOf('#') !== 0) {
+      hashTags.setCustomValidity('Хэш-тег должен начинаться с #!');
+      submit.addEventListener('click', showErrorMessage);
+    }
+
+    if (hashTagsSplit[i].length > 20) {
+      hashTags.setCustomValidity('Длина хэш-тега должна быть не больше 20 символов!');
+      submit.addEventListener('click', showErrorMessage);
+    }
+  }
+
+  if (hashTagsSplit.length > 5) {
+    hashTags.setCustomValidity('Хэш-тегов не может быть больше 5!');
+    submit.addEventListener('click', showErrorMessage);
+  }
+});
