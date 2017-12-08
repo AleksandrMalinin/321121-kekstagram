@@ -191,31 +191,39 @@ uploadResizeIncrease.addEventListener('click', function () {
   }
 });
 
-var showErrorMessage = function () {
-  hashTags.style.outlineColor = 'red';
-};
-
 // хэштеги
 hashTags.addEventListener('change', function () {
   var separator = ' ';
   var hashTagsSplit = hashTags.value.split(separator);
+  hashTags.style.outlineColor = '';
 
   for (i = 0; i < hashTagsSplit.length; i++) {
     hashTagsSplit[i] = hashTagsSplit[i].toLowerCase();
 
     if (hashTagsSplit[i].lastIndexOf('#') !== 0) {
       hashTags.setCustomValidity('Хэш-тег должен начинаться с #!');
-      submit.addEventListener('click', showErrorMessage);
+      hashTags.style.outlineColor = 'red';
     }
 
     if (hashTagsSplit[i].length > 20) {
       hashTags.setCustomValidity('Длина хэш-тега должна быть не больше 20 символов!');
-      submit.addEventListener('click', showErrorMessage);
+      hashTags.style.outlineColor = 'red';
+    }
+
+    for (var j = i; j < hashTagsSplit.length; j++) {
+      if (hashTagsSplit[i] === hashTagsSplit[j + 1]) {
+        hashTags.setCustomValidity('Хэш-теги не должны повторяться!');
+        hashTags.style.outlineColor = 'red';
+      }
     }
   }
 
   if (hashTagsSplit.length > 5) {
     hashTags.setCustomValidity('Хэш-тегов не может быть больше 5!');
-    submit.addEventListener('click', showErrorMessage);
+    hashTags.style.outlineColor = 'red';
   }
+});
+
+submit.addEventListener('click', function () {
+
 });
