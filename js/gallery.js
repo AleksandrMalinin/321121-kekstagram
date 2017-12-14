@@ -10,7 +10,7 @@
   var uploadFormCancel = uploadOverlay.querySelector('.upload-form-cancel');
   var uploadFormDescription = uploadOverlay.querySelector('.upload-form-description');
 
-  var keyPressHandlerGallery = function (e) {
+  var keyPressGalleryHandler = function (e) {
     window.util.escEvent(e, closeGallery);
   };
 
@@ -20,7 +20,7 @@
 
   var closeGallery = function () {
     galleryOverlay.classList.add('hidden');
-    document.removeEventListener('keydown', keyPressHandlerGallery);
+    document.removeEventListener('keydown', keyPressGalleryHandler);
   };
 
   //  фотографии в галерее
@@ -35,7 +35,7 @@
     galleryOverlay.querySelector('.likes-count').textContent = parentNode.querySelector('.picture-likes').textContent;
     galleryOverlay.querySelector('.comments-count').textContent = parentNode.querySelector('.picture-comments').textContent;
 
-    document.addEventListener('keydown', keyPressHandlerGallery);
+    document.addEventListener('keydown', keyPressGalleryHandler);
   });
 
   // закрытие галереи
@@ -48,13 +48,13 @@
     window.util.enterEvent(evt, closeGallery);
   });
 
-  var keyPressHandlerPopup = function (evt) {
+  var keyPressPopupHandler = function (evt) {
     window.util.escEvent(evt, closePopup);
   };
 
   var openPopup = function () {
     uploadOverlay.classList.remove('hidden');
-    document.addEventListener('keydown', keyPressHandlerPopup);
+    document.addEventListener('keydown', keyPressPopupHandler);
     uploadFormDescription.addEventListener('keydown', function (evt) {
       window.util.escEvent(evt, evt.stopPropagation());
     });
@@ -62,7 +62,7 @@
 
   var closePopup = function () {
     uploadOverlay.classList.add('hidden');
-    document.removeEventListener('keydown', keyPressHandlerPopup);
+    document.removeEventListener('keydown', keyPressPopupHandler);
   };
 
   // показ окна формы при загрузке фотографии

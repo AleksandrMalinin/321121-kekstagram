@@ -8,7 +8,14 @@
   var uploadResizeIncrease = uploadOverlay.querySelector('.upload-resize-controls-button-inc');
   var uploadResizeValue = uploadOverlay.querySelector('.upload-resize-controls-value');
   var hashTags = uploadOverlay.querySelector('.upload-form-hashtags');
-  var submit = uploadOverlay.querySelector('.upload-form-submit');
+  //  var submit = uploadOverlay.querySelector('.upload-form-submit');
+  var uploadEffectLevel = uploadEffectControls.querySelector('.upload-effect-level');
+  var filterHandle = uploadEffectControls.querySelector('.upload-effect-level-pin');
+  var rangeValue = uploadEffectControls.querySelector('.upload-effect-level-val');
+  var effectValue = uploadEffectControls.querySelector('.upload-effect-level-value');
+
+  rangeValue.style.width = '0%';
+  filterHandle.style.display = 'none';
 
   // смена фильтра
   uploadEffectControls.addEventListener('click', function (evt) {
@@ -19,6 +26,29 @@
     }
 
     effectImagePreview.className = target.getAttribute('name') + '-' + target.getAttribute('value');
+    filterHandle.style.display = 'block';
+    rangeValue.style.width = effectValue.value + '%';
+    filterHandle.style.left = effectValue.value;
+
+    if (effectImagePreview.className === 'effect-chrome') {
+      effectImagePreview.style.filter = 'grayscale(' + effectValue.value / 100 + ')';
+    }
+
+    if (effectImagePreview.className === 'effect-sepia') {
+      effectImagePreview.style.filter = 'sepia(' + effectValue.value / 100 + ')';
+    }
+
+    if (effectImagePreview.className === 'effect-marvin') {
+      effectImagePreview.style.filter = 'invert(' + effectValue.value + '%' + ')';
+    }
+
+    if (effectImagePreview.className === 'effect-phobos') {
+      effectImagePreview.style.filter = 'blur(' + effectValue.value / 100 * 5 + 'px' + ')';
+    }
+
+    if (effectImagePreview.className === 'effect-heat') {
+      effectImagePreview.style.filter = 'brightness(' + effectValue.value / 100 * 3 + ')';
+    }
   });
 
   // уменьшение масштаба
@@ -38,7 +68,7 @@
     }
 
     uploadResizeValue.setAttribute('value', parseInt(uploadResizeValue.value, 10) + parseInt(uploadResizeValue.step, 10) + '%');
-    if (parseInt(uploadResizeValue.value, 10) < 100) {
+    if (parseInt(uploadResizeValue.value, 10) < window.constants.PERCENT_MAXVALUE) {
       effectImagePreview.style.transform = 'scale(0.' + parseInt(uploadResizeValue.value, 10) + ')';
     } else {
       effectImagePreview.style.transform = 'scale(1)';
@@ -46,7 +76,7 @@
   });
 
   // хэштеги
-  hashTags.addEventListener('change', function () {
+  hashTags.addEventListener('keypress', function () {
     var separator = ' ';
     var hashTagsSplit = hashTags.value.split(separator);
     hashTags.style.outlineColor = '';
@@ -59,7 +89,7 @@
         hashTags.style.outlineColor = 'red';
       }
 
-      if (hashTagsSplit[i].length > 20) {
+      if (hashTagsSplit[i].length > window.constants.HASHTAG_MAXLENGTH) {
         hashTags.setCustomValidity('Длина хэш-тега должна быть не больше 20 символов!');
         hashTags.style.outlineColor = 'red';
       }
@@ -78,9 +108,60 @@
     }
   });
 
-  submit.addEventListener('submit', function () {
-    effectImagePreview.style.transform = 'scale(1)';
-    effectImagePreview.classList.add = 'effect-none';
-    hashTags.value = '';
+  filterHandle.addEventListener('mousedown', function (evt) {
+    var startCoords = {
+      x: evt.clientX
+    };
+
+    var onMouseMove = function (moveEvt) {
+
+      var shift = {
+        x: startCoords.x - moveEvt.clientX,
+      };
+
+      startCoords = {
+        x: moveEvt.clientX
+      };
+
+      if (shift.x <= filterHandle.offsetLeft) {
+        filterHandle.style.left = Math.round((filterHandle.offsetLeft - shift.x) / window.constants.RANGE_MAXCOORD * 100) + '%';
+        rangeValue.style.width = filterHandle.style.left;
+        effectValue.value = Math.round((filterHandle.offsetLeft + shift.x) / window.constants.RANGE_MAXCOORD * 100);
+        if (filterHandle.offsetLeft > window.constants.RANGE_MAXCOORD) {
+          filterHandle.style.left = Math.round((filterHandle.offsetLeft + shift.x) / window.constants.RANGE_MAXCOORD * 100) + '%';
+          rangeValue.style.width = filterHandle.style.left;
+          effectValue.value = Math.round((filterHandle.offsetLeft + shift.x) / window.constants.RANGE_MAXCOORD * 100);
+        }
+      }
+
+      if (effectImagePreview.className === 'effect-chrome') {
+        effectImagePreview.style.filter = 'grayscale(' + (effectValue.value / window.constants.PERCENT_MAXVALUE).toFixed(1) + ')';
+      }
+
+      if (effectImagePreview.className === 'effect-sepia') {
+        effectImagePreview.style.filter = 'sepia(' + (effectValue.value / window.constants.PERCENT_MAXVALUE).toFixed(1) + ')';
+      }
+
+      if (effectImagePreview.className === 'effect-marvin') {
+        effectImagePreview.style.filter = 'invert(' + Math.round((filterHandle.offsetLeft + shift.x) / window.constants.RANGE_MAXCOORD * 100) + '%' + ')';
+      }
+
+      if (effectImagePreview.className === 'effect-phobos') {
+        effectImagePreview.style.filter = 'blur(' + (effectValue.value / window.constants.PERCENT_MAXVALUE * window.constants.BLUR_MAXVALUE).toFixed(1) + 'px' + ')';
+      }
+
+      if (effectImagePreview.className === 'effect-heat') {
+      //  effectValue.value = (effectValue.value / window.constants.PERCENT_MAXVALUE * window.constants.BRIGHTNESS_MAXVALUE).toFixed(1);
+        effectImagePreview.style.filter = 'brightness(' + (effectValue.value / window.constants.PERCENT_MAXVALUE * window.constants.BRIGHTNESS_MAXVALUE).toFixed(1) + ')';
+      }
+    };
+
+    var onMouseUp = function () {
+      uploadEffectLevel.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    };
+
+    uploadEffectLevel.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
   });
 })();
