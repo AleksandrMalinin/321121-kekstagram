@@ -1,0 +1,16 @@
+'use strict';
+
+(function () {
+  window.constants = {
+    ESC_KEYCODE: 27,
+    ENTER_KEYCODE: 13,
+    PICTURES_LENGTH: 25,
+    LIKE_MINCOUNTS: 15,
+    LIKE_MAXCOUNTS: 200,
+    RANGE_MAXCOORD: 455,
+    BLUR_MAXVALUE: 5,
+    BRIGHTNESS_MAXVALUE: 3,
+    PERCENT_MAXVALUE: 100,
+    HASHTAG_MAXLENGTH: 20
+  };
+})();
