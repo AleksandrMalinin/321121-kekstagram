@@ -39,9 +39,7 @@
   });
 
   // закрытие галереи
-  galleryClose.addEventListener('click', function () {
-    closeGallery();
-  });
+  galleryClose.addEventListener('click', closeGallery);
 
   // закрытие галереи через ENTER
   galleryClose.addEventListener('keydown', function (evt) {
@@ -66,14 +64,10 @@
   };
 
   // показ окна формы при загрузке фотографии
-  uploadFile.addEventListener('change', function () {
-    openPopup();
-  });
+  uploadFile.addEventListener('change', openPopup);
 
   // скрытие окна формы
-  uploadFormCancel.addEventListener('click', function () {
-    closePopup();
-  });
+  uploadFormCancel.addEventListener('click', closePopup);
 
   // закрытие через ENTER
   uploadFormCancel.addEventListener('keydown', function (evt) {

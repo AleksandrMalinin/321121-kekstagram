@@ -14,6 +14,7 @@
   var rangeValue = uploadEffectControls.querySelector('.upload-effect-level-val');
   var effectValue = uploadEffectControls.querySelector('.upload-effect-level-value');
 
+  effectValue.style.display = 'none';
   rangeValue.style.width = '0%';
   filterHandle.style.display = 'none';
 
@@ -27,27 +28,34 @@
 
     effectImagePreview.className = target.getAttribute('name') + '-' + target.getAttribute('value');
     filterHandle.style.display = 'block';
-    rangeValue.style.width = effectValue.value + '%';
-    filterHandle.style.left = effectValue.value;
+    rangeValue.style.width = window.constants.INITIAL_INPUT_VALUE + '%';
+    filterHandle.style.left = window.constants.INITIAL_INPUT_VALUE + '%';
+    effectValue.value = window.constants.INITIAL_INPUT_VALUE;
+
+    if (effectImagePreview.className === 'effect-none') {
+      rangeValue.style.width = '0%';
+      filterHandle.style.display = 'none';
+      effectImagePreview.style.filter = 'none';
+    }
 
     if (effectImagePreview.className === 'effect-chrome') {
-      effectImagePreview.style.filter = 'grayscale(' + effectValue.value / 100 + ')';
+      effectImagePreview.style.filter = 'grayscale(' + window.constants.INITIAL_INPUT_VALUE / 100 + ')';
     }
 
     if (effectImagePreview.className === 'effect-sepia') {
-      effectImagePreview.style.filter = 'sepia(' + effectValue.value / 100 + ')';
+      effectImagePreview.style.filter = 'sepia(' + window.constants.INITIAL_INPUT_VALUE / 100 + ')';
     }
 
     if (effectImagePreview.className === 'effect-marvin') {
-      effectImagePreview.style.filter = 'invert(' + effectValue.value + '%' + ')';
+      effectImagePreview.style.filter = 'invert(' + window.constants.INITIAL_INPUT_VALUE + '%' + ')';
     }
 
     if (effectImagePreview.className === 'effect-phobos') {
-      effectImagePreview.style.filter = 'blur(' + effectValue.value / 100 * 5 + 'px' + ')';
+      effectImagePreview.style.filter = 'blur(' + window.constants.INITIAL_INPUT_VALUE / 100 * 5 + 'px' + ')';
     }
 
     if (effectImagePreview.className === 'effect-heat') {
-      effectImagePreview.style.filter = 'brightness(' + effectValue.value / 100 * 3 + ')';
+      effectImagePreview.style.filter = 'brightness(' + window.constants.INITIAL_INPUT_VALUE / 100 * 3 + ')';
     }
   });
 
@@ -84,7 +92,7 @@
     for (var i = 0; i < hashTagsSplit.length; i++) {
       hashTagsSplit[i] = hashTagsSplit[i].toLowerCase();
 
-      if (hashTagsSplit[i].lastIndexOf('#') !== 0) {
+      if (hashTagsSplit[i].length !== 0 && hashTagsSplit[i].lastIndexOf('#') !== 0) {
         hashTags.setCustomValidity('Хэш-тег должен начинаться с #!');
         hashTags.style.outlineColor = 'red';
       }
@@ -98,6 +106,7 @@
         if (hashTagsSplit[i] === hashTagsSplit[j + 1]) {
           hashTags.setCustomValidity('Хэш-теги не должны повторяться!');
           hashTags.style.outlineColor = 'red';
+          break;
         }
       }
     }
@@ -124,13 +133,14 @@
       };
 
       if (shift.x <= filterHandle.offsetLeft) {
-        filterHandle.style.left = Math.round((filterHandle.offsetLeft - shift.x) / window.constants.RANGE_MAXCOORD * 100) + '%';
-        rangeValue.style.width = filterHandle.style.left;
-        effectValue.value = Math.round((filterHandle.offsetLeft + shift.x) / window.constants.RANGE_MAXCOORD * 100);
+        filterHandle.style.left = filterHandle.offsetLeft - shift.x + 'px';
+        rangeValue.style.width = parseInt(filterHandle.style.left, 10) - window.constants.HALF_FILTERHANDLE + 'px';
+        effectValue.value = Math.round((filterHandle.offsetLeft + shift.x) / window.constants.RANGE_MAXCOORD * window.constants.PERCENT_MAXVALUE);
+
         if (filterHandle.offsetLeft > window.constants.RANGE_MAXCOORD) {
-          filterHandle.style.left = Math.round((filterHandle.offsetLeft + shift.x) / window.constants.RANGE_MAXCOORD * 100) + '%';
-          rangeValue.style.width = filterHandle.style.left;
-          effectValue.value = Math.round((filterHandle.offsetLeft + shift.x) / window.constants.RANGE_MAXCOORD * 100);
+          filterHandle.style.left = filterHandle.offsetLeft + shift.x + 'px';
+          rangeValue.style.width = parseInt(filterHandle.style.left, 10) - window.constants.HALF_FILTERHANDLE + 'px';
+          effectValue.value = Math.round((filterHandle.offsetLeft + shift.x) / window.constants.RANGE_MAXCOORD * window.constants.PERCENT_MAXVALUE);
         }
       }
 
@@ -143,7 +153,7 @@
       }
 
       if (effectImagePreview.className === 'effect-marvin') {
-        effectImagePreview.style.filter = 'invert(' + Math.round((filterHandle.offsetLeft + shift.x) / window.constants.RANGE_MAXCOORD * 100) + '%' + ')';
+        effectImagePreview.style.filter = 'invert(' + Math.round((filterHandle.offsetLeft + shift.x) / window.constants.RANGE_MAXCOORD * window.constants.PERCENT_MAXVALUE) + '%' + ')';
       }
 
       if (effectImagePreview.className === 'effect-phobos') {
@@ -151,7 +161,6 @@
       }
 
       if (effectImagePreview.className === 'effect-heat') {
-      //  effectValue.value = (effectValue.value / window.constants.PERCENT_MAXVALUE * window.constants.BRIGHTNESS_MAXVALUE).toFixed(1);
         effectImagePreview.style.filter = 'brightness(' + (effectValue.value / window.constants.PERCENT_MAXVALUE * window.constants.BRIGHTNESS_MAXVALUE).toFixed(1) + ')';
       }
     };

@@ -1,24 +1,8 @@
 'use strict';
 
 (function () {
-  var PICTURES_LENGTH = 25;
-  var LIKE_MINCOUNTS = 15;
-  var LIKE_MAXCOUNTS = 200;
-
   var photosList = document.querySelector('.pictures');
   var pictureTemplate = document.querySelector('#picture-template').content.querySelector('.picture');
-
-  var getRandomNumber = function (minValue, maxValue) {
-    return Math.round(Math.random() * (maxValue - minValue) + minValue);
-  };
-
-  var getRandomIndex = function (array) {
-    return array[Math.floor(Math.random() * array.length)];
-  };
-
-  var getArrayRandomComments = function (array) {
-    return getRandomNumber(1, 2) === 1 ? [getRandomIndex(array)] : [getRandomIndex(array), getRandomIndex(array)];
-  };
 
   var picturesComments = [
     'Всё отлично!',
@@ -32,11 +16,11 @@
   var pictures = [];
 
   // генерация постов
-  for (var i = 0; i < PICTURES_LENGTH; i++) { // и здесь?
+  for (var i = 0; i < window.constants.PICTURES; i++) {
     pictures[i] = {
       url: 'photos/' + (i + 1) + '.jpg',
-      likes: getRandomNumber(LIKE_MINCOUNTS, LIKE_MAXCOUNTS), // вот здесь мне что, тоже писать константы через window? Это же длинно и глупо!
-      comments: getArrayRandomComments(picturesComments)
+      likes: window.util.getRandomNumber(window.constants.LIKE_MINCOUNTS, window.constants.LIKE_MAXCOUNTS),
+      comments: window.util.getArrayRandomComments(picturesComments)
     };
   }
 
