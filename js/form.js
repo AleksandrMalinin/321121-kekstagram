@@ -28,8 +28,8 @@
 
     effectImagePreview.className = target.getAttribute('name') + '-' + target.getAttribute('value');
     filterHandle.style.display = 'block';
-    rangeValue.style.width = window.constants.INITIAL_INPUT_VALUE + '%';
-    filterHandle.style.left = window.constants.INITIAL_INPUT_VALUE + '%';
+    filterHandle.style.left = window.constants.RANGE_MAXCOORD / window.constants.PERCENT_MAXVALUE * window.constants.INITIAL_INPUT_VALUE + 'px';
+    rangeValue.style.width = window.constants.RANGE_MAXCOORD / window.constants.PERCENT_MAXVALUE * window.constants.INITIAL_INPUT_VALUE - window.constants.HALF_FILTERHANDLE + 'px';
     effectValue.value = window.constants.INITIAL_INPUT_VALUE;
 
     if (effectImagePreview.className === 'effect-none') {
@@ -95,11 +95,15 @@
       if (hashTagsSplit[i].length !== 0 && hashTagsSplit[i].lastIndexOf('#') !== 0) {
         hashTags.setCustomValidity('Хэш-тег должен начинаться с #!');
         hashTags.style.outlineColor = 'red';
+      } else {
+        hashTags.setCustomValidity('');
       }
 
       if (hashTagsSplit[i].length > window.constants.HASHTAG_MAXLENGTH) {
         hashTags.setCustomValidity('Длина хэш-тега должна быть не больше 20 символов!');
         hashTags.style.outlineColor = 'red';
+      } else {
+        hashTags.setCustomValidity('');
       }
 
       for (var j = i; j < hashTagsSplit.length; j++) {
