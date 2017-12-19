@@ -15,10 +15,12 @@
     return photoElement;
   };
 
-  // отрисовка дом-элементов в блоке .pictures при помощи documentFragment
-  var fragment = document.createDocumentFragment();
-  for (var i = 0; i < window.pictures.length; i++) {
-    fragment.appendChild(renderPicture(window.pictures[i]));
-  }
-  photosList.appendChild(fragment);
+  window.backend.load(function (pictures) {
+    // отрисовка дом-элементов в блоке .pictures при помощи documentFragment
+    var fragment = document.createDocumentFragment();
+    for (var i = 0; i < pictures.length; i++) {
+      fragment.appendChild(renderPicture(pictures[i]));
+    }
+    photosList.appendChild(fragment);
+  });
 })();

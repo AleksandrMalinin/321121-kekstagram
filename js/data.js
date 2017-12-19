@@ -1,4 +1,4 @@
-'use strict';
+/*'use strict';
 
 (function () {
   var picturesComments = [
@@ -20,4 +20,4 @@
       comments: window.util.getArrayRandomComments(picturesComments)
     };
   }
-})();
+})();*/
