@@ -1,6 +1,7 @@
 'use strict';
 
 (function () {
+  var form = document.querySelector('.upload-form');
   var uploadOverlay = document.querySelector('.upload-overlay');
   var uploadEffectControls = uploadOverlay.querySelector('.upload-effect-controls');
   var effectImagePreview = uploadOverlay.querySelector('.effect-image-preview');
@@ -8,7 +9,7 @@
   // var uploadResizeIncrease = uploadOverlay.querySelector('.upload-resize-controls-button-inc');
   var uploadResizeValue = uploadOverlay.querySelector('.upload-resize-controls-value');
   var hashTags = uploadOverlay.querySelector('.upload-form-hashtags');
-  // var submit = uploadOverlay.querySelector('.upload-form-submit');
+  var submit = uploadOverlay.querySelector('.upload-form-submit');
   var filterHandle = uploadEffectControls.querySelector('.upload-effect-level-pin');
   var rangeValue = uploadEffectControls.querySelector('.upload-effect-level-val');
   var effectValue = uploadEffectControls.querySelector('.upload-effect-level-value');
@@ -94,6 +95,15 @@
       hashTags.setCustomValidity('Хэш-тегов не может быть больше 5!');
       hashTags.style.outlineColor = 'red';
     }
+  });
+
+  submit.addEventListener('click', function (evt) {
+    window.backend.save(new FormData(form), function () {
+      uploadOverlay.classList.add('hidden');
+      uploadResizeValue.value = 100;
+      effectImagePreview.className = 'effect-none';
+    });
+    evt.preventDefault();
   });
 
   var applyFilter = function () {
