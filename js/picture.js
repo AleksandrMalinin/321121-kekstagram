@@ -1,9 +1,8 @@
-/*  'use strict';
+'use strict';
 
 (function () {
   var photosList = document.querySelector('.pictures');
   var pictureTemplate = document.querySelector('#picture-template').content.querySelector('.picture');
-  var pictures = [];
 
   // созданные дом-элементы
   var renderPicture = function (picture) {
@@ -18,8 +17,8 @@
 
   // отрисовка дом-элементов в блоке .pictures при помощи documentFragment
   var fragment = document.createDocumentFragment();
-  for (var i = 0; i < pictures.length; i++) {
-    fragment.appendChild(renderPicture(pictures[i]));
+  for (var i = 0; i < window.pictures.length; i++) {
+    fragment.appendChild(renderPicture(window.pictures[i]));
   }
   photosList.appendChild(fragment);
-})();*/
+})();
