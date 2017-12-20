@@ -58,10 +58,11 @@
   window.initializeScale.resizeIncrease(adjustScale);
 
   // хэштеги
-  hashTags.addEventListener('keypress', function () {
+  hashTags.addEventListener('input', function () {
     var separator = ' ';
     var hashTagsSplit = hashTags.value.split(separator);
     hashTags.style.outlineColor = '';
+    hashTags.style.outlineStyle = 'solid';
 
     for (var i = 0; i < hashTagsSplit.length; i++) {
       hashTagsSplit[i] = hashTagsSplit[i].toLowerCase();
