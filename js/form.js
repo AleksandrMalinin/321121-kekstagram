@@ -5,11 +5,9 @@
   var uploadOverlay = document.querySelector('.upload-overlay');
   var uploadEffectControls = uploadOverlay.querySelector('.upload-effect-controls');
   var effectImagePreview = uploadOverlay.querySelector('.effect-image-preview');
-  // var uploadResizeDecrease = uploadOverlay.querySelector('.upload-resize-controls-button-dec');
-  // var uploadResizeIncrease = uploadOverlay.querySelector('.upload-resize-controls-button-inc');
   var uploadResizeValue = uploadOverlay.querySelector('.upload-resize-controls-value');
   var hashTags = uploadOverlay.querySelector('.upload-form-hashtags');
-  var submit = uploadOverlay.querySelector('.upload-form-submit');
+  var uploadPhotoForm = document.querySelector('.upload-form');
   var filterHandle = uploadEffectControls.querySelector('.upload-effect-level-pin');
   var rangeValue = uploadEffectControls.querySelector('.upload-effect-level-val');
   var effectValue = uploadEffectControls.querySelector('.upload-effect-level-value');
@@ -87,6 +85,8 @@
           hashTags.setCustomValidity('Хэш-теги не должны повторяться!');
           hashTags.style.outlineColor = 'red';
           break;
+        } else {
+          hashTags.setCustomValidity('');
         }
       }
     }
@@ -94,15 +94,16 @@
     if (hashTagsSplit.length > 5) {
       hashTags.setCustomValidity('Хэш-тегов не может быть больше 5!');
       hashTags.style.outlineColor = 'red';
+    } else {
+      hashTags.setCustomValidity('');
     }
   });
 
-  submit.addEventListener('click', function (evt) {
+  uploadPhotoForm.addEventListener('submit', function (evt) {
     window.backend.save(new FormData(form), function () {
       uploadOverlay.classList.add('hidden');
-      uploadResizeValue.value = 100;
-      effectImagePreview.className = 'effect-none';
     });
+
     evt.preventDefault();
   });
 
@@ -128,5 +129,5 @@
     }
   };
 
-  window.initializeFilter.controlSLider(applyFilter);
+  window.initializeFilter.controlSlider(applyFilter);
 })();

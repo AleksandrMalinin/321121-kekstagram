@@ -1,33 +1,34 @@
 'use strict';
 
 (function () {
-  var URL = 'https://1510.dump.academy/kekstagram/data';
-  var FORM_URL = 'https://1510.dump.academy/kekstagram';
+  var reactToServer = function (xhr, onLoad, onError) {
+    xhr.addEventListener('load', function () {
+      if (xhr.status === window.constants.SERVER_STATUS_SUCCESS) {
+        onLoad(xhr.response);
+      } else {
+        onError('Неизвестный статус: ' + xhr.status + ' ' + xhr.statusText);
+      }
+    });
+
+    xhr.addEventListener('error', function () {
+      onError('Ошибка соединения');
+    });
+
+    xhr.addEventListener('timeout', function () {
+      onError('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
+    });
+  };
 
   window.backend = {
     load: function (onLoad, onError) {
       var xhr = new XMLHttpRequest();
       xhr.responseType = 'json';
 
-      xhr.addEventListener('load', function () {
-        if (xhr.status === 200) {
-          onLoad(xhr.response);
-        } else {
-          onError('Неизвестный статус: ' + xhr.status + ' ' + xhr.statusText);
-        }
-      });
+      reactToServer(xhr, onLoad, onError);
 
-      xhr.addEventListener('error', function () {
-        onError('Ошибка соединения');
-      });
+      xhr.timeout = window.constants.SERVER_TIMEOUT;
 
-      xhr.addEventListener('timeout', function () {
-        onError('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
-      });
-
-      xhr.timeout = 15000;
-
-      xhr.open('GET', URL);
+      xhr.open('GET', window.constants.URL + '/data');
       xhr.send();
     },
 
@@ -35,16 +36,11 @@
       var xhr = new XMLHttpRequest();
       xhr.responseType = 'json';
 
-      xhr.open('POST', FORM_URL);
+      reactToServer(xhr, onLoad, onError);
 
-      xhr.addEventListener('load', function () {
-        onLoad(xhr.response);
-      });
+      xhr.timeout = window.constants.SERVER_TIMEOUT;
 
-      xhr.addEventListener('error', function () {
-        onError('сообщение об ошибке!');
-      });
-
+      xhr.open('POST', window.constants.URL);
       xhr.send(data);
     }
   };
