@@ -26,14 +26,14 @@
   //  фотографии в галерее
   photosList.addEventListener('click', function (evt) {
     evt.preventDefault();
+
+    var target = evt.target.closest('.picture');
+
+    galleryOverlay.querySelector('img').setAttribute('src', target.querySelector('img').getAttribute('src'));
+    galleryOverlay.querySelector('.likes-count').textContent = target.querySelector('.picture-likes').textContent;
+    galleryOverlay.querySelector('.comments-count').textContent = target.querySelector('.picture-comments').textContent;
+
     openGallery();
-
-    var target = evt.target;
-    var parentNode = target.parentNode;
-
-    galleryOverlay.querySelector('img').setAttribute('src', parentNode.querySelector('img').getAttribute('src'));
-    galleryOverlay.querySelector('.likes-count').textContent = parentNode.querySelector('.picture-likes').textContent;
-    galleryOverlay.querySelector('.comments-count').textContent = parentNode.querySelector('.picture-comments').textContent;
 
     document.addEventListener('keydown', keyPressGalleryHandler);
   });

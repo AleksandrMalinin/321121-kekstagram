@@ -3,6 +3,7 @@
 (function () {
   var photosList = document.querySelector('.pictures');
   var pictureTemplate = document.querySelector('#picture-template').content.querySelector('.picture');
+  var filters = document.querySelector('.filters');
 
   // созданные дом-элементы
   var renderPicture = function (picture) {
@@ -22,5 +23,6 @@
       fragment.appendChild(renderPicture(pictures[i]));
     }
     photosList.appendChild(fragment);
+    filters.classList.remove('filters-inactive');
   });
 })();

@@ -8,19 +8,28 @@
   var uploadResizeValue = uploadOverlay.querySelector('.upload-resize-controls-value');
   var hashTags = uploadOverlay.querySelector('.upload-form-hashtags');
   var uploadPhotoForm = document.querySelector('.upload-form');
+  var effectLevelblock = uploadEffectControls.querySelector('.upload-effect-level');
   var filterHandle = uploadEffectControls.querySelector('.upload-effect-level-pin');
-  var rangeValue = uploadEffectControls.querySelector('.upload-effect-level-val');
   var effectValue = uploadEffectControls.querySelector('.upload-effect-level-value');
 
-  effectValue.style.display = 'none';
-  rangeValue.style.width = '0%';
-  filterHandle.style.display = 'none';
+  var setDefaultOptions = function () {
+    effectValue.style.display = 'none';
+    filterHandle.style.display = 'none';
+    effectLevelblock.style.display = 'none';
+    effectImagePreview.style = '';
+    effectImagePreview.className = 'effect-image-preview';
+    uploadResizeValue.setAttribute('value', window.constants.PERCENT_MAXVALUE + '%');
+  };
 
-  var applyDefaultFilter = function () {
+  setDefaultOptions();
+
+  var setDefaultFilter = function () {
+    effectLevelblock.style.display = 'block';
+
     if (effectImagePreview.className === 'effect-none') {
-      rangeValue.style.width = '0%';
       filterHandle.style.display = 'none';
       effectImagePreview.style.filter = 'none';
+      effectLevelblock.style.display = 'none';
     }
 
     if (effectImagePreview.className === 'effect-chrome') {
@@ -44,7 +53,7 @@
     }
   };
 
-  window.initializeFilter.applyClass(applyDefaultFilter);
+  window.initializeFilter.applyClass(setDefaultFilter);
 
   var adjustScale = function () {
     if (parseInt(uploadResizeValue.value, 10) < window.constants.PERCENT_MAXVALUE) {
@@ -57,8 +66,8 @@
   window.initializeScale.resizeDecrease(adjustScale);
   window.initializeScale.resizeIncrease(adjustScale);
 
-  // хэштеги
-  hashTags.addEventListener('input', function () {
+
+  var getFormError = function () {
     var separator = ' ';
     var hashTagsSplit = hashTags.value.split(separator);
     hashTags.style.outlineColor = '';
@@ -68,41 +77,47 @@
       hashTagsSplit[i] = hashTagsSplit[i].toLowerCase();
 
       if (hashTagsSplit[i].length !== 0 && hashTagsSplit[i].lastIndexOf('#') !== 0) {
-        hashTags.setCustomValidity('Хэш-тег должен начинаться с #!');
-        hashTags.style.outlineColor = 'red';
-      } else {
-        hashTags.setCustomValidity('');
+        return 'Хэш-тег должен начинаться с #!';
       }
 
       if (hashTagsSplit[i].length > window.constants.HASHTAG_MAXLENGTH) {
-        hashTags.setCustomValidity('Длина хэш-тега должна быть не больше 20 символов!');
-        hashTags.style.outlineColor = 'red';
-      } else {
-        hashTags.setCustomValidity('');
+        return 'Длина хэш-тега должна быть не больше 20 символов!';
       }
 
       for (var j = i; j < hashTagsSplit.length; j++) {
         if (hashTagsSplit[i] === hashTagsSplit[j + 1]) {
-          hashTags.setCustomValidity('Хэш-теги не должны повторяться!');
-          hashTags.style.outlineColor = 'red';
-          break;
-        } else {
-          hashTags.setCustomValidity('');
+          return 'Хэш-теги не должны повторяться!';
         }
       }
     }
 
     if (hashTagsSplit.length > 5) {
       hashTags.setCustomValidity('Хэш-тегов не может быть больше 5!');
-      hashTags.style.outlineColor = 'red';
-    } else {
-      hashTags.setCustomValidity('');
     }
+
+    return false;
+  };
+
+  var checkForm = function () {
+    var errors = getFormError();
+
+    if (errors) {
+      hashTags.style.outlineColor = 'red';
+      hashTags.setCustomValidity(errors);
+    }
+  };
+
+  // хэштеги
+  hashTags.addEventListener('input', function () {
+    checkForm();
   });
 
   uploadPhotoForm.addEventListener('submit', function (evt) {
+    checkForm();
     window.backend.save(new FormData(form), function () {
       uploadOverlay.classList.add('hidden');
+      uploadPhotoForm.reset();
+      setDefaultOptions();
     });
 
     evt.preventDefault();
