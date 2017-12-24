@@ -118,7 +118,7 @@
       uploadOverlay.classList.add('hidden');
       uploadPhotoForm.reset();
       setDefaultOptions();
-    });
+    }, window.util.errorHandler);
 
     evt.preventDefault();
   });
