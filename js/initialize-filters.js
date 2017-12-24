@@ -28,7 +28,7 @@
       });
     },
 
-    controlSLider: function (param) {
+    controlSlider: function (param) {
       filterHandle.addEventListener('mousedown', function (evt) {
         var startCoords = {
           x: evt.clientX
