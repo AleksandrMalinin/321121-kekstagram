@@ -1,7 +1,16 @@
 'use strict';
 
 (function () {
+  var lastTimeout;
+
   window.util = {
+    debounce: function (action) {
+      if (lastTimeout) {
+        window.clearTimeout(lastTimeout);
+      }
+      lastTimeout = window.setTimeout(action, window.constants.DEBOUNCE_INTERVAL);
+    },
+
     escEvent: function (evt, closeWindow) {
       if (evt.keyCode === window.constants.ESC_KEYCODE) {
         closeWindow();

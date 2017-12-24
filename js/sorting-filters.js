@@ -46,8 +46,10 @@
 
   filters.addEventListener('click', function (evt) {
     if (evt.target.type === 'radio') {
-      removePictures();
-      window.renderPicture(sortingPictures[evt.target.value](data));
+      window.util.debounce(function () {
+        removePictures();
+        window.renderPicture(sortingPictures[evt.target.value](data));
+      });
     }
   });
 })();

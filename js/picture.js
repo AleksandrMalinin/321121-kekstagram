@@ -4,7 +4,6 @@
   var photosList = document.querySelector('.pictures');
   var pictureTemplate = document.querySelector('#picture-template').content.querySelector('.picture');
 
-  // созданные дом-элементы
   var createElements = function (picture) {
     var photoElement = pictureTemplate.cloneNode(true);
 

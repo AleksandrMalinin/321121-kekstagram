@@ -1,7 +1,6 @@
 'use strict';
 
 (function () {
-  var form = document.querySelector('.upload-form');
   var uploadOverlay = document.querySelector('.upload-overlay');
   var uploadEffectControls = uploadOverlay.querySelector('.upload-effect-controls');
   var effectImagePreview = uploadOverlay.querySelector('.effect-image-preview');
@@ -92,7 +91,7 @@
     }
 
     if (hashTagsSplit.length > 5) {
-      hashTags.setCustomValidity('Хэш-тегов не может быть больше 5!');
+      return 'Хэш-тегов не может быть больше 5!';
     }
 
     return false;
@@ -104,6 +103,8 @@
     if (errors) {
       hashTags.style.outlineColor = 'red';
       hashTags.setCustomValidity(errors);
+    } else {
+      hashTags.setCustomValidity('');
     }
   };
 
@@ -114,7 +115,7 @@
 
   uploadPhotoForm.addEventListener('submit', function (evt) {
     checkForm();
-    window.backend.save(new FormData(form), function () {
+    window.backend.save(new FormData(uploadPhotoForm), function () {
       uploadOverlay.classList.add('hidden');
       uploadPhotoForm.reset();
       setDefaultOptions();
