@@ -7,25 +7,25 @@
   var uploadResizeValue = uploadOverlay.querySelector('.upload-resize-controls-value');
 
   window.initializeScale = {
-    resizeDecrease: function (param) {
+    resizeDecrease: function (callback) {
       uploadResizeDecrease.addEventListener('click', function () {
         if (parseInt(uploadResizeValue.value, 10) <= parseInt(uploadResizeValue.min, 10)) {
           return;
         }
 
         uploadResizeValue.setAttribute('value', parseInt(uploadResizeValue.value, 10) - parseInt(uploadResizeValue.step, 10) + '%');
-        param();
+        callback();
       });
     },
 
-    resizeIncrease: function (param) {
+    resizeIncrease: function (callback) {
       uploadResizeIncrease.addEventListener('click', function () {
         if (parseInt(uploadResizeValue.value, 10) >= parseInt(uploadResizeValue.max, 10)) {
           return;
         }
 
         uploadResizeValue.setAttribute('value', parseInt(uploadResizeValue.value, 10) + parseInt(uploadResizeValue.step, 10) + '%');
-        param();
+        callback();
       });
     }
   };

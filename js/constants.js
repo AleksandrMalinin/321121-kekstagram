@@ -17,6 +17,7 @@
     SERVER_TIMEOUT: 15000,
     SERVER_STATUS_SUCCESS: 200,
     URL: 'https://1510.dump.academy/kekstagram',
-    DEBOUNCE_INTERVAL: 500
+    DEBOUNCE_INTERVAL: 500,
+    FILE_TYPES: ['gif', 'jpg', 'img', 'png']
   };
 })();
