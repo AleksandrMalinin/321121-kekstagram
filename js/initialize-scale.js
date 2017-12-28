@@ -9,22 +9,26 @@
   window.initializeScale = {
     resizeDecrease: function (callback) {
       uploadResizeDecrease.addEventListener('click', function () {
-        if (parseInt(uploadResizeValue.value, 10) <= parseInt(uploadResizeValue.min, 10)) {
+        var parsedResizeValue = parseInt(uploadResizeValue.value, 10);
+
+        if (parsedResizeValue <= parseInt(uploadResizeValue.min, 10)) {
           return;
         }
 
-        uploadResizeValue.setAttribute('value', parseInt(uploadResizeValue.value, 10) - parseInt(uploadResizeValue.step, 10) + '%');
+        uploadResizeValue.setAttribute('value', parsedResizeValue - parseInt(uploadResizeValue.step, 10) + '%');
         callback();
       });
     },
 
     resizeIncrease: function (callback) {
       uploadResizeIncrease.addEventListener('click', function () {
-        if (parseInt(uploadResizeValue.value, 10) >= parseInt(uploadResizeValue.max, 10)) {
+        var parsedResizeValue = parseInt(uploadResizeValue.value, 10);
+
+        if (parsedResizeValue >= parseInt(uploadResizeValue.max, 10)) {
           return;
         }
 
-        uploadResizeValue.setAttribute('value', parseInt(uploadResizeValue.value, 10) + parseInt(uploadResizeValue.step, 10) + '%');
+        uploadResizeValue.setAttribute('value', parsedResizeValue + parseInt(uploadResizeValue.step, 10) + '%');
         callback();
       });
     }

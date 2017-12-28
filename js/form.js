@@ -55,8 +55,9 @@
   window.initializeFilter.applyClass(setDefaultFilter);
 
   var adjustScale = function () {
-    if (parseInt(uploadResizeValue.value, 10) < window.constants.PERCENT_MAXVALUE) {
-      effectImagePreview.style.transform = 'scale(0.' + parseInt(uploadResizeValue.value, 10) + ')';
+    var parsedResizeValue = parseInt(uploadResizeValue.value, 10);
+    if (parsedResizeValue < window.constants.PERCENT_MAXVALUE) {
+      effectImagePreview.style.transform = 'scale(0.' + parsedResizeValue + ')';
     } else {
       effectImagePreview.style.transform = 'scale(1)';
     }
@@ -65,6 +66,16 @@
   window.initializeScale.resizeDecrease(adjustScale);
   window.initializeScale.resizeIncrease(adjustScale);
 
+  var uniqueHashTag = function unique(array) {
+    var obj = {};
+
+    for (var i = 0; i < array.length; i++) {
+      var str = array[i];
+      obj[str] = true;
+    }
+
+    return Object.keys(obj);
+  };
 
   var getFormError = function () {
     var separator = ' ';
@@ -72,7 +83,7 @@
     hashTags.style.outlineColor = '';
     hashTags.style.outlineStyle = 'solid';
 
-    for (var i = 0; i < hashTagsSplit.length; i++) {
+    /* for (var i = 0; i < hashTagsSplit.length; i++) {
       if (hashTagsSplit[i].length !== 0 && hashTagsSplit[i].lastIndexOf('#') !== 0) {
         return 'Хэш-тег должен начинаться с #!';
       }
@@ -92,7 +103,28 @@
       return 'Хэш-тегов не может быть больше 5!';
     }
 
-    return false;
+    return false;*/
+
+    /*if (uniqueHashTag(hashTagsSplit).length === hashTagsSplit.length) {
+      return true;
+    }*/
+
+    if (hashTagsSplit.length > 5) {
+      return 'Хэш-тегов не может быть больше 5!';
+    }
+
+    var getFormValidity = hashTagsSplit.some(function (hashTag) {
+
+      if (hashTag.length > window.constants.HASHTAG_MAXLENGTH
+        || (hashTag.length !== 0 && hashTag.lastIndexOf('#') !== 0)
+        || uniqueHashTag(hashTagsSplit).length !== hashTagsSplit.length) {
+        return true;
+      }
+
+      return false;
+    });
+
+    return getFormValidity;
   };
 
   var checkForm = function () {
@@ -100,7 +132,7 @@
 
     if (errors) {
       hashTags.style.outlineColor = 'red';
-      hashTags.setCustomValidity(errors);
+      hashTags.setCustomValidity(''); // ???
     } else {
       hashTags.setCustomValidity('');
     }
