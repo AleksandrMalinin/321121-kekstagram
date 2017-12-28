@@ -16,9 +16,9 @@
 
   window.renderPicture = function (pictures) {
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i < pictures.length; i++) {
-      fragment.appendChild(createElements(pictures[i]));
-    }
+    pictures.forEach(function (element) {
+      fragment.appendChild(createElements(element));
+    });
     photosList.appendChild(fragment);
   };
 })();

@@ -11,15 +11,15 @@
       lastTimeout = window.setTimeout(action, window.constants.DEBOUNCE_INTERVAL);
     },
 
-    escEvent: function (evt, closeWindow) {
+    escEvent: function (evt, callback) {
       if (evt.keyCode === window.constants.ESC_KEYCODE) {
-        closeWindow();
+        callback();
       }
     },
 
-    enterEvent: function (evt, closeWindow) {
+    enterEvent: function (evt, callback) {
       if (evt.keyCode === window.constants.ENTER_KEYCODE) {
-        closeWindow();
+        callback();
       }
     },
 
@@ -29,10 +29,6 @@
 
     getRandomIndex: function (array) {
       return array[Math.floor(Math.random() * array.length)];
-    },
-
-    getArrayRandomComments: function (array) {
-      return window.util.getRandomNumber(1, 2) === 1 ? [window.util.getRandomIndex(array)] : [window.util.getRandomIndex(array), window.util.getRandomIndex(array)];
     },
 
     errorHandler: function (errorMessage) {
@@ -55,6 +51,10 @@
 
       template.style.cssText = styles.join(';');
       document.body.appendChild(template);
+    },
+
+    getUniqueElements: function (element, index, self) {
+      return self.indexOf(element) === index;
     }
   };
 })();

@@ -10,7 +10,7 @@
   var effectValue = uploadEffectControls.querySelector('.upload-effect-level-value');
 
   window.initializeFilter = {
-    applyClass: function (param) {
+    applyClass: function (callback) {
       uploadEffectControls.addEventListener('click', function (evt) {
         var target = evt.target;
 
@@ -20,21 +20,22 @@
 
         effectImagePreview.className = target.getAttribute('name') + '-' + target.getAttribute('value');
         filterHandle.style.display = 'block';
-        filterHandle.style.left = window.constants.RANGE_MAXCOORD / window.constants.PERCENT_MAXVALUE * window.constants.INITIAL_INPUT_VALUE + 'px';
-        rangeValue.style.width = window.constants.RANGE_MAXCOORD / window.constants.PERCENT_MAXVALUE * window.constants.INITIAL_INPUT_VALUE - window.constants.HALF_FILTERHANDLE + 'px';
+        var positionDefault = window.constants.RANGE_MAXCOORD / window.constants.PERCENT_MAXVALUE * window.constants.INITIAL_INPUT_VALUE;
+        filterHandle.style.left = positionDefault + 'px';
+        rangeValue.style.width = positionDefault - window.constants.HALF_FILTERHANDLE + 'px';
         effectValue.value = window.constants.INITIAL_INPUT_VALUE;
 
-        param();
+        callback();
       });
     },
 
-    controlSlider: function (param) {
+    controlSlider: function (callback) {
       filterHandle.addEventListener('mousedown', function (evt) {
         var startCoords = {
           x: evt.clientX
         };
 
-        var onMouseMove = function (moveEvt) {
+        var mouseMoveHandler = function (moveEvt) {
 
           window.shift = {
             x: startCoords.x - moveEvt.clientX,
@@ -56,16 +57,16 @@
             }
           }
 
-          param();
+          callback();
         };
 
-        var onMouseUp = function () {
-          uploadEffectLevel.removeEventListener('mousemove', onMouseMove);
-          document.removeEventListener('mouseup', onMouseUp);
+        var mouseUpHandler = function () {
+          uploadEffectLevel.removeEventListener('mousemove', mouseMoveHandler);
+          document.removeEventListener('mouseup', mouseUpHandler);
         };
 
-        uploadEffectLevel.addEventListener('mousemove', onMouseMove);
-        document.addEventListener('mouseup', onMouseUp);
+        uploadEffectLevel.addEventListener('mousemove', mouseMoveHandler);
+        document.addEventListener('mouseup', mouseUpHandler);
       });
     }
   };

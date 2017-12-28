@@ -10,8 +10,8 @@
   var uploadFormCancel = uploadOverlay.querySelector('.upload-form-cancel');
   var uploadFormDescription = uploadOverlay.querySelector('.upload-form-description');
 
-  var keyPressGalleryHandler = function (e) {
-    window.util.escEvent(e, closeGallery);
+  var keyPressGalleryHandler = function (evt) {
+    window.util.escEvent(evt, closeGallery);
   };
 
   var openGallery = function () {
