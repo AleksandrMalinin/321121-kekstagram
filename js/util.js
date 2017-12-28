@@ -51,6 +51,10 @@
 
       template.style.cssText = styles.join(';');
       document.body.appendChild(template);
+    },
+
+    getUniqueElements: function (element, index, self) {
+      return self.indexOf(element) === index;
     }
   };
 })();

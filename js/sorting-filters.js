@@ -15,9 +15,6 @@
 
   var removePictures = function () {
     var picturesList = photosList.querySelectorAll('.picture');
-    /* for (var i = 0; i < picturesList.length; i++) {
-      photosList.removeChild(picturesList[i]);
-    }*/
     picturesList.forEach(function (element) {
       photosList.removeChild(element);
     });
