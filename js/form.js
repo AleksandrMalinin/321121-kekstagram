@@ -105,7 +105,7 @@
 
     return false;*/
 
-    /*if (uniqueHashTag(hashTagsSplit).length === hashTagsSplit.length) {
+    /* if (uniqueHashTag(hashTagsSplit).length === hashTagsSplit.length) {
       return true;
     }*/
 
