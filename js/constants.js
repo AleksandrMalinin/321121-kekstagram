@@ -16,7 +16,7 @@
     HALF_FILTERHANDLE: 9,
     SERVER_TIMEOUT: 15000,
     SERVER_STATUS_SUCCESS: 200,
-    URL: 'https://1510.dump.academy/kekstagram',
+    URL: 'https://js.dump.academy/kekstagram',
     DEBOUNCE_INTERVAL: 500,
     FILE_TYPES: ['gif', 'jpg', 'img', 'png']
   };
